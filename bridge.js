@@ -108,12 +108,16 @@ wss.on('connection', (ws, req) => {
       } else if (
         msg.type === 'wallet_op_request' ||
         msg.type === 'wallet_op_response' ||
-        msg.type === 'message'
+        msg.type === 'message' ||
+        msg.type === 'send_btc'
       ) {
         const session = sessions[msg.sessionId];
         if (!session) {
           console.log(`❌ Session not found for ${msg.type}`);
           return;
+        }
+        else{
+          send(ws,msg)
         }
 
         const target = msg.sender === 'hadron' ? session.iris : session.hadron;
@@ -123,6 +127,7 @@ wss.on('connection', (ws, req) => {
           console.log(`❌ Target not connected for ${msg.type}`);
         }
       }
+      
 
     } catch (e) {
       console.error('❌ Error:', e.message);
